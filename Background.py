@@ -1,24 +1,31 @@
 import pygame
-Racetrack = 'racetrack.jpg'
+#Racetrack = 'race track.png'
+
 from pygame.locals import *
 from sys import exit
 
-pygame.init()
 
+def load_background(scale_factor=0.255, filename="race track.png"):
+    # Racetrack = 'race track.png'
 
+    # Load the background image
+    Racetrack = pygame.image.load(filename)
 
-#Can  be adjusted appropriately...
-test_screen = pygame.display.set_mode((1002,797))
-pygame.display.set_caption("Test")
+    pygame.init()
 
+    bg_width, bg_height = Racetrack.get_size()
 
-Bg = pygame.image.load(Racetrack)
+    new_width = int(bg_width * scale_factor)
+    new_height = int(bg_height * scale_factor)
 
-while True:
-    test_screen.fill((0,0,0))
+    Racetrack = pygame.transform.scale(Racetrack, (new_width, new_height))
 
-    test_screen.blit(Bg,(0,0))
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            exit()
-    pygame.display.update()
+    # Can be adjusted appropriately...
+    # test_screen = pygame.display.set_mode((1002,797))
+    test_screen = pygame.display.set_mode((new_width, new_height))
+    pygame.display.set_caption("Formula One")
+
+    # Bg = pygame.image.load(Racetrack)
+    Bg = Racetrack
+
+    return Bg, test_screen

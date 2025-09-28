@@ -4,11 +4,12 @@ import os
 
 class F1Car:
 
-    def __init__(self, position=(400, 300), angle=0, image_path="F1_red.png"):
+    def __init__(self, position=(400, 300), angle=0, image_path="F1_red.png", screen=None):
         # Core movement properties (simple and predictable)
         self.position = pygame.math.Vector2(position) # Center position
         self.speed = 0  # Scalar speed
         self.angle = angle  # Direction car is facing (0 = up)
+        self.screen=screen #stores the screen reference
         
         # tunable parameters
         self.config = {
@@ -34,6 +35,7 @@ class F1Car:
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 img_path = os.path.join(script_dir, image_path)
                 self.original_image = pygame.image.load(img_path).convert_alpha()
+                
         except Exception as e:
             print(f"Image load failed: {e}")
             self._create_default_car()
@@ -71,11 +73,23 @@ class F1Car:
         radians = math.radians(self.angle)
         self.position.x += math.sin(radians) * self.speed
         self.position.y -= math.cos(radians) * self.speed  # Pygame's Y is inverted
-    
+
+        if self.screen:
+            screen_width, screen_height = self.screen.get_size()
+            car_width, car_height = self.original_image.get_size()
+            
+            marginX = 19
+            marginY= 58
+
+            #keep car inside boundaries of the screen/background place.
+            self.position.x = max(car_width // 2 - marginX, min(self.position.x, screen_width - car_width // 2 + marginX))
+            self.position.y = max(car_height // 2 - marginY, min(self.position.y, screen_height - car_height // 2 + marginY))
     def draw(self, surface):
         """Simple rotation without any scaling"""
         if self.original_image:
             rotated = pygame.transform.rotate(self.original_image, -self.angle)
+            width, height = rotated.get_size()
+            rotated = pygame.transform.scale(rotated, (width // 3, height // 3))
             rect = rotated.get_rect(center=(int(self.position.x), int(self.position.y)))
             surface.blit(rotated, rect)
     
