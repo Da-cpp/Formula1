@@ -1,16 +1,16 @@
 import pygame 
 
 class Man(pygame.sprite.Sprite):
-    def __init__(self, x, y, image_path ="player.png"):
+    def __init__(self, x, y, image_path ="player4.png"): #placeholder sprite
         super().__init__()
         self.sprite_sheet = pygame.image.load(image_path).convert_alpha()
         self.sprite_sheet.set_colorkey((0, 0, 0))
         self.frames = {
             "idle": [self.get_frame(0, 0)],                     
             "down": [self.get_frame(0, i) for i in range(1, 3)], 
-            "up": [self.get_frame(1, i) for i in range(4)],   
-            "left": [self.get_frame(1, i) for i in range(3)], 
-            "right": [self.get_frame(0, i) for i in range(1, 3)], 
+            "up": [self.get_frame(0, i) for i in range(3, 5)],   
+            "left": [self.get_frame(2, i) for i in range(3,5)], 
+            "right": [self.get_frame(2, i) for i in range(0, 2)], 
         }
         self.direction = "down"
         self.frame_index = 0
@@ -18,28 +18,28 @@ class Man(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = 4
         self.animation_timer = 1
-        self.animation_speed = 100
+        self.animation_speed = 200
 
     def get_frame(self, row, col):
-        frame_width = 147 #self.sprite_sheet.get_width() // 4  # 4 columns
-        frame_height = 204 #self.sprite_sheet.get_height() // 2  # 2 rows
+        frame_width = self.sprite_sheet.get_width() // 6  # 6 columns
+        frame_height = self.sprite_sheet.get_height() // 4  # 4 rows
         x = col * frame_width
         y = row * frame_height
 
         # Extract the exact frame without overlapping
         frame = self.sprite_sheet.subsurface(pygame.Rect(x, y, frame_width, frame_height)).copy()
-        frame.set_colorkey((0, 0, 0))  # Make black transparent
+        frame.set_colorkey((0, 0, 0)) 
 
         # Scale the frame down 
-        scaled_width = int(frame_width * 0.5)  
-        scaled_height = int(frame_height * 0.5)
+        scaled_width = int(frame_width)  
+        scaled_height = int(frame_height)
         return pygame.transform.scale(frame, (scaled_width, scaled_height))
 
     def update(self):
         keys = pygame.key.get_pressed()
         moved = False
-        self.frame_index = 0  #set to the first frame
-        self.image = self.frames[self.direction][self.frame_index]  # Default to current frame
+        self.frame_index = 0  
+        self.image = self.frames[self.direction][self.frame_index]  
         if keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
             self.direction = "left"
@@ -80,7 +80,7 @@ def main():
 
     # Create the screen
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Man Class Test")
+    pygame.display.set_caption("Player Test")
 
     # Clock for controlling the frame rate
     clock = pygame.time.Clock()
@@ -99,7 +99,7 @@ def main():
         player.update()
 
         # Clear the screen
-        screen.fill((0, 0, 0))  # Fill the screen with white
+        screen.fill((0, 0, 0))  
 
         # Draw the player
         player.draw(screen)
